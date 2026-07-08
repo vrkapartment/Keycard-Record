@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CardStatus {
+  ACTIVE
+  PROCESS_INACTIVE
+  INACTIVE
+}
+
+model Room {
+  id        Int       @id @default(autoincrement())
+  number    String    @unique
+  note      String?
+  createdAt DateTime  @default(now())
+  cards     Keycard[]
+}
+
+model Keycard {
+  id              Int        @id @default(autoincrement())
+  roomId          Int
+  room            Room       @relation(fields: [roomId], references: [id])
+  code            String
+  status          CardStatus @default(ACTIVE)
+  createdAt       DateTime   @default(now())
+  statusChangedAt DateTime   @default(now())
+  cancelledAt     DateTime?
+
+  @@index([roomId])
+  @@index([code])
+}

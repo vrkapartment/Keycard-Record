@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "WebFetch(domain:pris.ly)",
+      "WebFetch(domain:www.prisma.io)",
+      "Bash(npx tsx *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(chromium-cli --help)",
+      "Read(//c/Users/User/AppData/Local/Temp/claude/g--Keycard-Record/6c6835f7-ceac-4f32-aa07-8cfd4bf69717/scratchpad/**)",
+      "Bash(npm init *)",
+      "Bash(npx playwright *)",
+      "Bash(node verify.js)",
+      "Bash(node verify2.js)",
+      "Bash(powershell -NoProfile -Command 'Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '\\\\''*next dev*'\\\\'' -or $_.CommandLine -like '\\\\''*npm run dev*'\\\\'' } | Select-Object ProcessId, CommandLine')",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 45744 -Force\")",
+      "Bash(curl -sf http://localhost:3000)",
+      "Bash(powershell -NoProfile -Command \"Get-NetTCPConnection -LocalPort 3000 -State Listen | Select-Object -ExpandProperty OwningProcess\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 25380 -Force\")",
+      "Bash(node -e ' *)",
+      "Bash(node cleanup-tmp.mjs)",
+      "Bash(mv cleanup-tmp.mjs cleanup-tmp.ts)",
+      "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=11436' | Select-Object ProcessId, ParentProcessId, CommandLine\")",
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 11436 -Force\")"
+    ]
+  }
+}
