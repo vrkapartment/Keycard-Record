@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { deleteRoom } from "@/actions/rooms";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { StatusBadge } from "@/components/StatusBadge";
+import { SubmitButton } from "@/components/SubmitButton";
+import { EmptyState } from "@/components/EmptyState";
 
 export default async function RoomDetailPage({
   params,
@@ -31,23 +33,24 @@ export default async function RoomDetailPage({
         <div>
           <h1 className="text-xl font-semibold">ห้อง {room.number}</h1>
           {room.note && (
-            <p className="mt-1 text-sm text-zinc-500">{room.note}</p>
+            <p className="mt-1 text-sm text-muted">{room.note}</p>
           )}
         </div>
         <div className="flex gap-2">
           <Link
             href={`/rooms/${room.id}/edit`}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-100"
+            className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium hover:bg-surface-sunken"
           >
             แก้ไขห้อง
           </Link>
           <form action={deleteRoomWithId}>
-            <button
-              type="submit"
-              className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
+            <SubmitButton
+              variant="destructive"
+              size="sm"
+              pendingText="กำลังลบ…"
             >
               ลบห้อง
-            </button>
+            </SubmitButton>
           </form>
         </div>
       </div>
@@ -55,23 +58,33 @@ export default async function RoomDetailPage({
       <ErrorBanner message={error} />
 
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-zinc-500">
+        <h2 className="text-sm font-medium text-muted">
           บัตรคีย์การ์ดในห้องนี้ ({room.cards.length})
         </h2>
         <Link
           href={`/cards/new?roomId=${room.id}`}
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
         >
           + เพิ่มบัตร
         </Link>
       </div>
 
       {room.cards.length === 0 ? (
-        <p className="text-sm text-zinc-500">ยังไม่มีบัตรในห้องนี้</p>
+        <EmptyState
+          message="ยังไม่มีบัตรในห้องนี้"
+          action={
+            <Link
+              href={`/cards/new?roomId=${room.id}`}
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+            >
+              + เพิ่มบัตรแรก
+            </Link>
+          }
+        />
       ) : (
-        <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
+        <div className="overflow-hidden rounded-md border border-border bg-paper">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 text-left text-zinc-500">
+            <thead className="bg-surface text-left text-muted">
               <tr>
                 <th className="px-4 py-2 font-medium">รหัสบัตร</th>
                 <th className="px-4 py-2 font-medium">สถานะ</th>
@@ -80,11 +93,14 @@ export default async function RoomDetailPage({
             </thead>
             <tbody>
               {room.cards.map((card) => (
-                <tr key={card.id} className="border-t border-zinc-100">
+                <tr
+                  key={card.id}
+                  className="hoverable-row border-t border-border"
+                >
                   <td className="px-4 py-2">
                     <Link
                       href={`/cards/${card.id}`}
-                      className="font-mono font-medium text-zinc-900 hover:underline"
+                      className="font-mono font-medium text-primary hover:underline"
                     >
                       {card.code}
                     </Link>
@@ -92,7 +108,7 @@ export default async function RoomDetailPage({
                   <td className="px-4 py-2">
                     <StatusBadge status={card.status} />
                   </td>
-                  <td className="px-4 py-2 text-zinc-500">
+                  <td className="px-4 py-2 text-muted">
                     {card.createdAt.toLocaleDateString("th-TH")}
                   </td>
                 </tr>

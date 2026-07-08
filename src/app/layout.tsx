@@ -28,20 +28,20 @@ export default function RootLayout({
       lang="th"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900">
-        <header className="border-b border-zinc-200 bg-white">
+      <body className="min-h-full flex flex-col bg-surface-sunken text-ink">
+        <header className="border-b border-border bg-paper">
           <div className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3">
-            <Link href="/" className="font-semibold">
+            <Link href="/" className="font-semibold text-primary">
               Keycard Record
             </Link>
-            <nav className="flex gap-4 text-sm text-zinc-600">
-              <Link href="/" className="hover:text-zinc-900">
+            <nav className="flex gap-4 text-sm text-muted">
+              <Link href="/" className="hover:text-ink">
                 หน้าแรก
               </Link>
-              <Link href="/rooms" className="hover:text-zinc-900">
+              <Link href="/rooms" className="hover:text-ink">
                 ห้อง
               </Link>
-              <Link href="/cards" className="hover:text-zinc-900">
+              <Link href="/cards" className="hover:text-ink">
                 บัตรคีย์การ์ด
               </Link>
             </nav>

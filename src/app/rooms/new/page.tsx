@@ -1,5 +1,6 @@
 import { createRoom } from "@/actions/rooms";
 import { ErrorBanner } from "@/components/ErrorBanner";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function NewRoomPage({
   searchParams,
@@ -21,7 +22,7 @@ export default async function NewRoomPage({
             id="number"
             name="number"
             required
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
             placeholder="เช่น 204"
           />
         </div>
@@ -32,16 +33,11 @@ export default async function NewRoomPage({
           <input
             id="note"
             name="note"
-            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
             placeholder="เช่น ตึก A ชั้น 2"
           />
         </div>
-        <button
-          type="submit"
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
-        >
-          บันทึก
-        </button>
+        <SubmitButton pendingText="กำลังบันทึก…">บันทึก</SubmitButton>
       </form>
     </div>
   );

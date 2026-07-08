@@ -2,9 +2,9 @@ import { CardStatus } from "@/generated/prisma/client";
 import { STATUS_LABELS } from "@/lib/validation";
 
 const STYLES: Record<CardStatus, string> = {
-  ACTIVE: "bg-green-100 text-green-800",
-  PROCESS_INACTIVE: "bg-yellow-100 text-yellow-800",
-  INACTIVE: "bg-red-100 text-red-800",
+  ACTIVE: "bg-active-bg text-active-text",
+  PROCESS_INACTIVE: "bg-pending-bg text-pending-text",
+  INACTIVE: "bg-inactive-bg text-inactive-text",
 };
 
 export function StatusBadge({ status }: { status: CardStatus }) {

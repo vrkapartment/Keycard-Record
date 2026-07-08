@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { CardStatus } from "@/generated/prisma/client";
+import { CardStatus, Prisma } from "@/generated/prisma/client";
 import { isCardStatus, isValidCardCode } from "@/lib/validation";
 
 export async function createCard(formData: FormData) {
@@ -58,9 +58,21 @@ export async function updateCard(cardId: number, formData: FormData) {
 }
 
 export async function deleteCard(cardId: number) {
-  const card = await prisma.keycard.delete({ where: { id: cardId } });
+  const existing = await prisma.keycard.findUnique({ where: { id: cardId } });
+  if (!existing) {
+    redirect("/cards");
+  }
+
+  try {
+    await prisma.keycard.delete({ where: { id: cardId } });
+  } catch (err) {
+    const alreadyGone =
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025";
+    if (!alreadyGone) throw err;
+  }
   revalidatePath("/cards");
-  revalidatePath(`/rooms/${card.roomId}`);
+  revalidatePath(`/rooms/${existing.roomId}`);
   redirect("/cards");
 }
 

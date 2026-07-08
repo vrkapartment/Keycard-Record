@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-09T00:00:00.000Z",
+  "title": "Design System: Keycard Record",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Bottle Green",
+        "canonical": "oklch(0.32 0.085 160)",
+        "tonalRamp": ["#001401", "#003519", "#155B3D", "#408160", "#67A986", "#8DCFAB", "#ACF0CB", "#C0FFDE"]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Brass",
+        "canonical": "oklch(0.74 0.12 85)",
+        "tonalRamp": ["#200000", "#431F00", "#6A4500", "#916A00", "#BA9232", "#E1B75C", "#FFD87D", "#FFEC90"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(0.20 0.015 160)",
+        "tonalRamp": ["#080C0A", "#252A27", "#494F4B", "#6D736F", "#939A96", "#B8C0BB", "#D9E0DC", "#ECF4EF"]
+      },
+      "status-active": {
+        "role": "success",
+        "displayName": "Active Green",
+        "canonical": "oklch(0.58 0.14 148)",
+        "tonalRamp": ["#00230A", "#004010", "#0C641F", "#319047", "#63B871", "#9BDCA3", "#DEF1E0", "#F1FAF2"]
+      },
+      "status-pending": {
+        "role": "warning",
+        "displayName": "Pending Amber",
+        "canonical": "oklch(0.62 0.15 55)",
+        "tonalRamp": ["#2B0D00", "#5A1E00", "#8A3800", "#C9690C", "#E28A3B", "#F3AE72", "#FFE3CC", "#FFF1E4"]
+      },
+      "status-inactive": {
+        "role": "danger",
+        "displayName": "Inactive Red",
+        "canonical": "oklch(0.52 0.18 25)",
+        "tonalRamp": ["#3A0006", "#650311", "#8A0314", "#BA2B2E", "#DA5C55", "#F09188", "#FFE4E1", "#FFF1EF"]
+      }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "Page and section headings across rooms, cards, and the dashboard." },
+      "metric": { "displayName": "Metric", "purpose": "Dashboard status-count numbers only; tabular numerals." },
+      "body": { "displayName": "Body", "purpose": "Default UI text: table cells, form labels, buttons, nav." },
+      "label": { "displayName": "Label", "purpose": "Table column headers, status-pill text, field captions." },
+      "mono": { "displayName": "Mono", "purpose": "The 5-digit keycard code, everywhere it appears." }
+    },
+    "shadows": [
+      { "name": "whisper-lift", "value": "0 2px 10px oklch(0.32 0.085 160 / 0.10)", "purpose": "Hover-only elevation for clickable rows and card links. Never present at rest." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default easing for hover/focus state transitions (150-200ms)." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action per screen: save, update status.",
+      "html": "<button class=\"ds-btn-primary\">บันทึก</button>",
+      "css": ".ds-btn-primary { background: #003F23; color: #FFFFFF; font: 500 0.875rem/1.5 'Geist Sans', ui-sans-serif, system-ui; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; transition: background 180ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #002F15; } .ds-btn-primary:focus-visible { outline: 2px solid #003F23; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Non-destructive secondary actions: edit, cancel.",
+      "html": "<button class=\"ds-btn-secondary\">แก้ไข</button>",
+      "css": ".ds-btn-secondary { background: #FFFFFF; color: #101814; font: 500 0.875rem/1.5 'Geist Sans', ui-sans-serif, system-ui; padding: 8px 16px; border: 1px solid #BFC6C2; border-radius: 6px; cursor: pointer; transition: background 180ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-secondary:hover { background: #F0F5F2; } .ds-btn-secondary:focus-visible { outline: 2px solid #003F23; outline-offset: 2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Delete room / delete card. Never filled solid so it never competes with the Primary button.",
+      "html": "<button class=\"ds-btn-destructive\">ลบ</button>",
+      "css": ".ds-btn-destructive { background: #FFFFFF; color: #8A0314; font: 500 0.875rem/1.5 'Geist Sans', ui-sans-serif, system-ui; padding: 8px 16px; border: 1px solid #BFC6C2; border-radius: 6px; cursor: pointer; transition: background 180ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-destructive:hover { background: #FFE4E1; border-color: #F09188; } .ds-btn-destructive:focus-visible { outline: 2px solid #8A0314; outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Pill — Active",
+      "kind": "chip",
+      "refersTo": "status-badge",
+      "description": "Direct render of Keycard.status. One pill per card, tinted background with dark text, never a solid saturated fill.",
+      "html": "<span class=\"ds-status-pill ds-status-pill--active\">Active</span>",
+      "css": ".ds-status-pill { display: inline-flex; align-items: center; font: 500 0.75rem/1.4 'Geist Sans', ui-sans-serif, system-ui; padding: 2px 10px; border-radius: 9999px; } .ds-status-pill--active { background: #DEF1E0; color: #004010; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Room number, keycard code, and other form fields. Bottle Green focus ring, no glow.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"เช่น 00042\" />",
+      "css": ".ds-input { background: #FFFFFF; color: #101814; font: 400 0.875rem/1.5 'Geist Sans', ui-sans-serif, system-ui; padding: 8px 12px; border: 1px solid #BFC6C2; border-radius: 6px; width: 100%; box-sizing: border-box; transition: border-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-input:focus-visible { outline: 2px solid #003F23; outline-offset: 1px; border-color: #003F23; } .ds-input::placeholder { color: #595F5C; }"
+    },
+    {
+      "name": "Table Row (clickable)",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A room or keycard row in a list table. Flat at rest; Whisper Lift shadow only on hover, signaling it leads somewhere on click.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-row__code\">00042</span><span class=\"ds-row__meta\">ห้อง 204</span></div>",
+      "css": ".ds-row { display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; padding: 12px 16px; border-bottom: 1px solid #DBDFDC; cursor: pointer; transition: box-shadow 180ms cubic-bezier(0.4,0,0.2,1); } .ds-row:hover { box-shadow: 0 2px 10px oklch(0.32 0.085 160 / 0.10); } .ds-row__code { font: 500 0.875rem/1.5 'Geist Mono', ui-monospace, monospace; color: #101814; } .ds-row__meta { font: 400 0.875rem/1.5 'Geist Sans', ui-sans-serif, system-ui; color: #595F5C; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Concierge Vault",
+    "overview": "Keycard Record should feel like the front desk of a well-run boutique property with a vault quietly humming in the back office: unmistakably premium in its restraint, precise in its record-keeping, and calm under the weight of responsibility. Bottle-green ink and brass accents carry that feeling; everything else stays out of the way so the record itself reads as trustworthy. This spec establishes the brand color system for a codebase that, as of this writing, is entirely neutral (Tailwind's default zinc gray, no accent color, default green/yellow/red badge tints). Primary (Bottle Green) and Secondary (Brass) are new tokens to roll out across primary actions, navigation, and moments of emphasis.",
+    "keyCharacteristics": [
+      "One committed brand color (Bottle Green) carries primary actions and identity; Brass is reserved for rare, deliberate emphasis.",
+      "Status (Active / Process Inactive / Inactive) has its own dedicated color family, kept visually distinct from Bottle Green and Brass.",
+      "Flat by default; a whisper-soft shadow appears only as a hover response on interactive rows and cards.",
+      "Single sans family (Geist) for everything except keycard codes, which run in Geist Mono for scanability."
+    ],
+    "rules": [
+      { "name": "The Two-Color Rule", "body": "Bottle Green and Brass are the only two colors that carry brand meaning. If a third \"brand\" color shows up anywhere, it's a mistake.", "section": "colors" },
+      { "name": "The Status Never Borrows Rule", "body": "Status pills never use Bottle Green or Brass, even when a status color happens to look similar, keeping system state visually separate from brand chrome.", "section": "colors" },
+      { "name": "The One Face Rule", "body": "No second display typeface. A heading that needs more weight gets a heavier cut of Geist, not a different family.", "section": "typography" },
+      { "name": "The Flat-at-Rest Rule", "body": "If it isn't being hovered or focused, it has no shadow. Depth is earned by interaction, not decoration.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Paper (#FFFFFF) as the only background color at the page level — no cream, no sand, no warm-tinted neutral.",
+      "Do use Ink-colored text on any Brass fill, never white (white-on-Brass fails contrast at 2.33:1; Ink-on-Brass reaches 7.74:1).",
+      "Do keep status pills in their own dedicated hue family, distinct from Bottle Green and Brass.",
+      "Do reserve the filled Bottle Green button for exactly one primary action per screen.",
+      "Do run keycard codes in Geist Mono everywhere they appear, including inside form inputs."
+    ],
+    "donts": [
+      "Don't introduce a third \"brand\" color. Two (Bottle Green, Brass) is the system.",
+      "Don't add a shadow to anything at rest — Whisper Lift only appears on hover.",
+      "Don't fall back to the generic all-gray/zinc admin-template look this spec replaces.",
+      "Don't use border-left or border-right as a colored accent stripe on cards, rows, or callouts.",
+      "Don't fill a status pill with a solid saturated color; it stays a tinted-background pill with dark text.",
+      "Don't reach for a second display typeface for emphasis — a heavier weight of Geist does the job."
+    ]
+  }
+}

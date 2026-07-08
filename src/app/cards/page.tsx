@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { CardStatus } from "@/generated/prisma/client";
 import { STATUS_LABELS, STATUS_ORDER, isCardStatus } from "@/lib/validation";
 import { StatusBadge } from "@/components/StatusBadge";
+import { EmptyState } from "@/components/EmptyState";
 
 export default async function CardsPage({
   searchParams,
@@ -36,7 +37,7 @@ export default async function CardsPage({
         <h1 className="text-xl font-semibold">บัตรคีย์การ์ดทั้งหมด</h1>
         <Link
           href="/cards/new"
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-700"
+          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
         >
           + เพิ่มบัตร
         </Link>
@@ -44,16 +45,20 @@ export default async function CardsPage({
 
       <form
         method="get"
-        className="mb-4 flex flex-wrap items-end gap-3 rounded-md border border-zinc-200 bg-white p-3"
+        className="mb-4 flex flex-wrap items-end gap-3 rounded-md border border-border bg-paper p-3"
       >
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-500">
+          <label
+            className="mb-1 block text-xs font-medium text-muted"
+            htmlFor="filter-roomId"
+          >
             ห้อง
           </label>
           <select
+            id="filter-roomId"
             name="roomId"
             defaultValue={roomId ?? ""}
-            className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
           >
             <option value="">ทั้งหมด</option>
             {rooms.map((room) => (
@@ -64,13 +69,17 @@ export default async function CardsPage({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-500">
+          <label
+            className="mb-1 block text-xs font-medium text-muted"
+            htmlFor="filter-status"
+          >
             สถานะ
           </label>
           <select
+            id="filter-status"
             name="status"
             defaultValue={status ?? ""}
-            className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
           >
             <option value="">ทั้งหมด</option>
             {STATUS_ORDER.map((s) => (
@@ -81,26 +90,30 @@ export default async function CardsPage({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-500">
+          <label
+            className="mb-1 block text-xs font-medium text-muted"
+            htmlFor="filter-q"
+          >
             ค้นหารหัสบัตร
           </label>
           <input
+            id="filter-q"
             name="q"
             defaultValue={q ?? ""}
             placeholder="เช่น 00042"
-            className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
           />
         </div>
         <button
           type="submit"
-          className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium hover:bg-zinc-100"
+          className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium hover:bg-surface-sunken"
         >
           ค้นหา
         </button>
         {(roomId || status || q) && (
           <Link
             href="/cards"
-            className="text-sm text-zinc-500 underline underline-offset-2"
+            className="text-sm text-muted underline underline-offset-2"
           >
             ล้างตัวกรอง
           </Link>
@@ -108,11 +121,11 @@ export default async function CardsPage({
       </form>
 
       {cards.length === 0 ? (
-        <p className="text-sm text-zinc-500">ไม่พบบัตรที่ตรงกับเงื่อนไข</p>
+        <EmptyState message="ไม่พบบัตรที่ตรงกับเงื่อนไข" />
       ) : (
-        <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
+        <div className="overflow-hidden rounded-md border border-border bg-paper">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 text-left text-zinc-500">
+            <thead className="bg-surface text-left text-muted">
               <tr>
                 <th className="px-4 py-2 font-medium">รหัสบัตร</th>
                 <th className="px-4 py-2 font-medium">ห้อง</th>
@@ -122,11 +135,14 @@ export default async function CardsPage({
             </thead>
             <tbody>
               {cards.map((card) => (
-                <tr key={card.id} className="border-t border-zinc-100">
+                <tr
+                  key={card.id}
+                  className="hoverable-row border-t border-border"
+                >
                   <td className="px-4 py-2">
                     <Link
                       href={`/cards/${card.id}`}
-                      className="font-mono font-medium text-zinc-900 hover:underline"
+                      className="font-mono font-medium text-primary hover:underline"
                     >
                       {card.code}
                     </Link>
@@ -142,7 +158,7 @@ export default async function CardsPage({
                   <td className="px-4 py-2">
                     <StatusBadge status={card.status} />
                   </td>
-                  <td className="px-4 py-2 text-zinc-500">
+                  <td className="px-4 py-2 text-muted">
                     {card.statusChangedAt.toLocaleString("th-TH")}
                   </td>
                 </tr>

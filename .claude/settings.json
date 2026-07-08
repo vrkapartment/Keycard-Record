@@ -23,7 +23,17 @@
       "Bash(node cleanup-tmp.mjs)",
       "Bash(mv cleanup-tmp.mjs cleanup-tmp.ts)",
       "Bash(powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter 'ProcessId=11436' | Select-Object ProcessId, ParentProcessId, CommandLine\")",
-      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 11436 -Force\")"
+      "Bash(powershell -NoProfile -Command \"Stop-Process -Id 11436 -Force\")",
+      "Bash(npx --yes vercel --version)",
+      "Bash(npx --yes vercel inspect https://keycard-record-630pu9lyo-vrkapartments-projects.vercel.app --logs --scope vrkapartments-projects)",
+      "Bash(npx --yes vercel ls keycard-record --scope vrkapartments-projects)",
+      "Bash(rm -rf .vercel)",
+      "Bash(npx --yes vercel project add keycard-record --scope vrkapartments-projects)",
+      "Bash(npx --yes vercel link --yes --scope vrkapartments-projects --project keycard-record)",
+      "Bash(node push-env-tmp.mjs)",
+      "Bash(npx --yes vercel --prod --scope vrkapartments-projects)",
+      "Bash(node \"/c/Users/User/.claude/skills/impeccable/scripts/context.mjs\")",
+      "Read(//c/Users/User/.claude/skills/impeccable/reference/**)"
     ]
   }
 }

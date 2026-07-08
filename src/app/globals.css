@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neutrals — Paper cool-green whisper (hue 160, matching primary) */
+  --paper: #ffffff;
+  --surface: #f5f8f6;
+  --surface-sunken: #f0f5f2;
+  --border: #dbdfdc;
+  --border-strong: #bfc6c2;
+  --ink: #101814;
+  --muted: #595f5c;
+
+  /* Brand — Bottle Green + Brass (the only two brand colors; see DESIGN.md) */
+  --primary: #003f23;
+  --primary-hover: #002f15;
+  --accent: #cda448;
+  --accent-ink: #101814; /* text on Brass fills — white fails contrast here */
+
+  /* Status — dedicated palette, never borrows Primary or Accent */
+  --active-bg: #def1e0;
+  --active-text: #004010;
+  --pending-bg: #ffe3cc;
+  --pending-text: #732700;
+  --inactive-bg: #ffe4e1;
+  --inactive-text: #8a0314;
+  --inactive-border: #f09188;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-active-bg: var(--active-bg);
+  --color-active-text: var(--active-text);
+  --color-pending-bg: var(--pending-bg);
+  --color-pending-text: var(--pending-text);
+  --color-inactive-bg: var(--inactive-bg);
+  --color-inactive-text: var(--inactive-text);
+  --color-inactive-border: var(--inactive-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--surface-sunken);
+  color: var(--ink);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* The Flat-at-Rest Rule: shadow only ever appears as a hover response. */
+.hoverable-row {
+  transition: box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hoverable-row:hover {
+  box-shadow: 0 2px 10px oklch(0.32 0.085 160 / 0.1);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+
+/* Every interactive element gets a visible, on-brand keyboard focus ring. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button {
+  transition:
+    background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
 }

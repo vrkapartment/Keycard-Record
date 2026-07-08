@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 
 export async function createRoom(formData: FormData) {
   const number = String(formData.get("number") ?? "").trim();
@@ -58,7 +59,14 @@ export async function deleteRoom(roomId: number) {
     );
   }
 
-  await prisma.room.delete({ where: { id: roomId } });
+  try {
+    await prisma.room.delete({ where: { id: roomId } });
+  } catch (err) {
+    const alreadyGone =
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025";
+    if (!alreadyGone) throw err;
+  }
   revalidatePath("/rooms");
   redirect("/rooms");
 }

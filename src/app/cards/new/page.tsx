@@ -1,6 +1,9 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { createCard } from "@/actions/cards";
 import { ErrorBanner } from "@/components/ErrorBanner";
+import { SubmitButton } from "@/components/SubmitButton";
+import { EmptyState } from "@/components/EmptyState";
 
 export default async function NewCardPage({
   searchParams,
@@ -15,9 +18,17 @@ export default async function NewCardPage({
       <h1 className="mb-6 text-xl font-semibold">เพิ่มบัตรคีย์การ์ด</h1>
       <ErrorBanner message={error} />
       {rooms.length === 0 ? (
-        <p className="text-sm text-zinc-500">
-          ยังไม่มีห้องในระบบ กรุณาเพิ่มห้องก่อน
-        </p>
+        <EmptyState
+          message="ยังไม่มีห้องในระบบ กรุณาเพิ่มห้องก่อน"
+          action={
+            <Link
+              href="/rooms/new"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+            >
+              + เพิ่มห้อง
+            </Link>
+          }
+        />
       ) : (
         <form action={createCard} className="space-y-4">
           <div>
@@ -29,7 +40,7 @@ export default async function NewCardPage({
               name="roomId"
               required
               defaultValue={roomId ?? ""}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+              className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
             >
               <option value="" disabled>
                 เลือกห้อง
@@ -53,15 +64,10 @@ export default async function NewCardPage({
               maxLength={5}
               inputMode="numeric"
               placeholder="เช่น 00042"
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm font-mono"
+              className="w-full rounded-md border border-border-strong px-3 py-2 text-sm font-mono"
             />
           </div>
-          <button
-            type="submit"
-            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700"
-          >
-            บันทึก
-          </button>
+          <SubmitButton pendingText="กำลังบันทึก…">บันทึก</SubmitButton>
         </form>
       )}
     </div>

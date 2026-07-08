@@ -19,10 +19,18 @@ export default async function Home() {
     ]);
 
   const stats = [
-    { label: "ห้องทั้งหมด", value: roomCount },
-    { label: "Active", value: activeCount },
-    { label: "Process Inactive", value: processInactiveCount },
-    { label: "Inactive", value: inactiveCount },
+    { label: "ห้องทั้งหมด", value: roomCount, colorClass: "text-ink" },
+    { label: "Active", value: activeCount, colorClass: "text-active-text" },
+    {
+      label: "Process Inactive",
+      value: processInactiveCount,
+      colorClass: "text-pending-text",
+    },
+    {
+      label: "Inactive",
+      value: inactiveCount,
+      colorClass: "text-inactive-text",
+    },
   ];
 
   return (
@@ -33,32 +41,39 @@ export default async function Home() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-md border border-zinc-200 bg-white p-4"
+            className="rounded-md border border-border-strong bg-paper p-4"
           >
-            <div className="text-2xl font-semibold">{stat.value}</div>
-            <div className="text-xs text-zinc-500">{stat.label}</div>
+            <div className={`text-2xl font-semibold ${stat.colorClass}`}>
+              {stat.value}
+            </div>
+            <div className="text-xs text-muted">{stat.label}</div>
           </div>
         ))}
       </div>
 
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-zinc-500">
+      <div className="mb-4 flex items-center gap-2">
+        <h2 className="text-sm font-medium text-muted">
           บัตรที่รอดำเนินการปิดใช้งาน (Process Inactive)
         </h2>
+        {processInactiveCount > 0 && (
+          <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-ink">
+            {processInactiveCount} รอ
+          </span>
+        )}
         <Link
           href="/cards?status=PROCESS_INACTIVE"
-          className="text-sm text-zinc-600 underline underline-offset-2"
+          className="ml-auto text-sm text-primary underline underline-offset-2"
         >
           ดูทั้งหมด
         </Link>
       </div>
 
       {pendingCards.length === 0 ? (
-        <p className="text-sm text-zinc-500">ไม่มีบัตรที่รอดำเนินการ</p>
+        <p className="text-sm text-muted">ไม่มีบัตรที่รอดำเนินการ</p>
       ) : (
-        <div className="overflow-hidden rounded-md border border-zinc-200 bg-white">
+        <div className="overflow-hidden rounded-md border border-border bg-paper">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 text-left text-zinc-500">
+            <thead className="bg-surface text-left text-muted">
               <tr>
                 <th className="px-4 py-2 font-medium">รหัสบัตร</th>
                 <th className="px-4 py-2 font-medium">ห้อง</th>
@@ -68,11 +83,14 @@ export default async function Home() {
             </thead>
             <tbody>
               {pendingCards.map((card) => (
-                <tr key={card.id} className="border-t border-zinc-100">
+                <tr
+                  key={card.id}
+                  className="hoverable-row border-t border-border"
+                >
                   <td className="px-4 py-2">
                     <Link
                       href={`/cards/${card.id}`}
-                      className="font-mono font-medium hover:underline"
+                      className="font-mono font-medium text-primary hover:underline"
                     >
                       {card.code}
                     </Link>
@@ -81,7 +99,7 @@ export default async function Home() {
                   <td className="px-4 py-2">
                     <StatusBadge status={card.status} />
                   </td>
-                  <td className="px-4 py-2 text-zinc-500">
+                  <td className="px-4 py-2 text-muted">
                     {card.statusChangedAt.toLocaleDateString("th-TH")}
                   </td>
                 </tr>
