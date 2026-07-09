@@ -63,7 +63,7 @@ export default async function RoomDetailPage({
         </h2>
         <Link
           href={`/cards/new?roomId=${room.id}`}
-          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-ink hover:bg-primary-hover"
         >
           + เพิ่มบัตร
         </Link>
@@ -75,7 +75,7 @@ export default async function RoomDetailPage({
           action={
             <Link
               href={`/cards/new?roomId=${room.id}`}
-              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-ink hover:bg-primary-hover"
             >
               + เพิ่มบัตรแรก
             </Link>

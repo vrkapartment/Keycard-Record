@@ -3,7 +3,7 @@
 import { useFormStatus } from "react-dom";
 
 const VARIANTS = {
-  primary: "bg-primary text-paper hover:bg-primary-hover",
+  primary: "bg-primary text-primary-ink hover:bg-primary-hover",
   secondary: "border border-border-strong hover:bg-surface-sunken",
   destructive:
     "border border-border-strong text-inactive-text hover:bg-inactive-bg",

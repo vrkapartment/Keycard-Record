@@ -22,7 +22,7 @@ export default async function NewCardPage({
           action={
             <Link
               href="/rooms/new"
-              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-ink hover:bg-primary-hover"
             >
               + เพิ่มห้อง
             </Link>

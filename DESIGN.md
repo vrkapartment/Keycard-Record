@@ -148,6 +148,16 @@ Paper-white surfaces throughout; the brand's richness lives entirely in two colo
 
 **The Status Never Borrows Rule.** Status pills never use Bottle Green or Brass, even when a status color happens to look similar (Active's green is a different hue and a much lighter, more saturated tint than Bottle Green). This keeps "the system is telling me something" (status) visually separate from "this is the brand" (chrome).
 
+### Dark Mode
+
+Every color above is a CSS custom property (`--paper`, `--primary`, `--active-bg`, etc.), re-declared with dark-tuned values under `@media (prefers-color-scheme: dark)` and under explicit `[data-theme="dark"]` / `[data-theme="light"]` overrides — components never branch on theme, they just consume the same token classes (`bg-paper`, `text-primary`, ...) and the variable resolves to the right value. Users pick System / Light / Dark from Settings; the choice persists in `localStorage` and an inline script applies it before first paint to avoid a flash of the wrong theme.
+
+- **Neutrals** invert in *role*, not just value: the page background (`surface-sunken`) is the darkest layer, and `paper` (card fill) is a step *lighter* than the page — cards still read as "lifted," exactly like in light mode, just at the other end of the scale (`surface-sunken #080C0A` → `surface #111613` → `paper #1E2320`).
+- **Bottle Green inverts role.** In light mode Primary is a dark fill with white text on top. On a dark page a dark-on-dark fill would vanish, so dark mode's Primary is a bright mint-green (`#5BBB8C`) — bright enough to read as text/links directly on the dark page (6.8:1+), and used as a button fill with *dark* ink text on top (`--primary-ink`, a new token: white in light mode, near-black in dark mode — mirrors how `--accent-ink` already worked for Brass). Never write `text-paper` on a Primary-filled control for this reason; use `text-primary-ink`.
+- **Brass stays fixed.** Accent (`#CDA448`) and its Ink text pairing are unchanged across themes — a light gold chip with dark text reads fine on either background, so it doesn't need a dark variant.
+- **Status pills invert bg/text**, not just darken: light mode is a pale tint + dark saturated text; dark mode is a dark tint + bright saturated text (`active-text #73D083` on `active-bg #142A17`, etc.) — a pale pill floating on a near-black page reads as a lit-up hole in the surface, so the pairing flips the same way Linear/GitHub/Vercel badges do in their dark themes.
+- All text/bg and ink-on-fill pairings were verified ≥4.5:1 (WCAG AA body text) using the same OKLab→sRGB + relative-luminance method as the light palette above.
+
 ## 3. Typography
 
 **Body Font:** Geist Sans (with ui-sans-serif, system-ui fallback)

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
+
   /* Neutrals — Paper cool-green whisper (hue 160, matching primary) */
   --paper: #ffffff;
   --surface: #f5f8f6;
@@ -13,6 +15,7 @@
   /* Brand — Bottle Green + Brass (the only two brand colors; see DESIGN.md) */
   --primary: #003f23;
   --primary-hover: #002f15;
+  --primary-ink: #ffffff; /* text on Primary fills */
   --accent: #cda448;
   --accent-ink: #101814; /* text on Brass fills — white fails contrast here */
 
@@ -26,6 +29,86 @@
   --inactive-border: #f09188;
 }
 
+/* Dark theme — same two brand colors, re-tuned for a dark surface: Primary
+   inverts from a dark fill (light text) to a bright mint-green fill (dark
+   text), which is why button labels use --primary-ink rather than a fixed
+   white. Status pills invert from light tinted bg + dark text to dark
+   tinted bg + bright text, matching how badges read on dark surfaces in
+   Linear/GitHub/Vercel rather than sitting on the page as a bright island. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --paper: #1e2320;
+    --surface: #111613;
+    --surface-sunken: #080c0a;
+    --border: #56615a;
+    --border-strong: #727e77;
+    --ink: #e5e9e6;
+    --muted: #929b96;
+
+    --primary: #5bbb8c;
+    --primary-hover: #6fce9e;
+    --primary-ink: #090f0b;
+    --accent: #cda448;
+    --accent-ink: #101814;
+
+    --active-bg: #142a17;
+    --active-text: #73d083;
+    --pending-bg: #3c220f;
+    --pending-text: #fb9d59;
+    --inactive-bg: #371b19;
+    --inactive-text: #ff9890;
+    --inactive-border: #b75b55;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper: #ffffff;
+  --surface: #f5f8f6;
+  --surface-sunken: #f0f5f2;
+  --border: #dbdfdc;
+  --border-strong: #bfc6c2;
+  --ink: #101814;
+  --muted: #595f5c;
+  --primary: #003f23;
+  --primary-hover: #002f15;
+  --primary-ink: #ffffff;
+  --accent: #cda448;
+  --accent-ink: #101814;
+  --active-bg: #def1e0;
+  --active-text: #004010;
+  --pending-bg: #ffe3cc;
+  --pending-text: #732700;
+  --inactive-bg: #ffe4e1;
+  --inactive-text: #8a0314;
+  --inactive-border: #f09188;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #1e2320;
+  --surface: #111613;
+  --surface-sunken: #080c0a;
+  --border: #56615a;
+  --border-strong: #727e77;
+  --ink: #e5e9e6;
+  --muted: #929b96;
+  --primary: #5bbb8c;
+  --primary-hover: #6fce9e;
+  --primary-ink: #090f0b;
+  --accent: #cda448;
+  --accent-ink: #101814;
+  --active-bg: #142a17;
+  --active-text: #73d083;
+  --pending-bg: #3c220f;
+  --pending-text: #fb9d59;
+  --inactive-bg: #371b19;
+  --inactive-text: #ff9890;
+  --inactive-border: #b75b55;
+}
+
 @theme inline {
   --color-paper: var(--paper);
   --color-surface: var(--surface);
@@ -36,6 +119,7 @@
   --color-muted: var(--muted);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-active-bg: var(--active-bg);
@@ -60,7 +144,7 @@ body {
   transition: box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .hoverable-row:hover {
-  box-shadow: 0 2px 10px oklch(0.32 0.085 160 / 0.1);
+  box-shadow: 0 2px 10px color-mix(in oklch, var(--primary) 18%, transparent);
 }
 
 input:focus-visible,

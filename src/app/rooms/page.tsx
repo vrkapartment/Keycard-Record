@@ -54,7 +54,7 @@ export default async function RoomsPage({
         <h1 className="text-xl font-semibold">ห้องทั้งหมด</h1>
         <Link
           href="/rooms/new"
-          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+          className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-ink hover:bg-primary-hover"
         >
           + เพิ่มห้อง
         </Link>
@@ -74,7 +74,7 @@ export default async function RoomsPage({
             !q ? (
               <Link
                 href="/rooms/new"
-                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-ink hover:bg-primary-hover"
               >
                 + เพิ่มห้องแรก
               </Link>

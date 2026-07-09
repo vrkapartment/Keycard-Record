@@ -3,6 +3,7 @@ import { verifySession } from "@/lib/session";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { SuccessBanner } from "@/components/SuccessBanner";
 import { SubmitButton } from "@/components/SubmitButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function SettingsPage({
   searchParams,
@@ -18,6 +19,11 @@ export default async function SettingsPage({
 
       <ErrorBanner message={error} />
       <SuccessBanner message={success === "1" ? "เปลี่ยนรหัส PIN เรียบร้อยแล้ว" : undefined} />
+
+      <div className="rounded-lg border border-border bg-paper p-4">
+        <h2 className="mb-3 text-sm font-semibold">ธีม</h2>
+        <ThemeToggle />
+      </div>
 
       <div className="rounded-lg border border-border bg-paper p-4">
         <h2 className="mb-3 text-sm font-semibold">เปลี่ยนรหัส PIN</h2>
