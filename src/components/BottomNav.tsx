@@ -2,16 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon, DoorIcon, CardIcon } from "./icons";
+import { HomeIcon, DoorIcon, CardIcon, SettingsIcon } from "./icons";
 
 const TABS = [
   { href: "/", label: "หน้าแรก", Icon: HomeIcon },
   { href: "/rooms", label: "ห้อง", Icon: DoorIcon },
   { href: "/cards", label: "การ์ด", Icon: CardIcon },
+  { href: "/settings", label: "ตั้งค่า", Icon: SettingsIcon },
 ] as const;
 
 export function BottomNav() {
   const pathname = usePathname();
+
+  if (pathname === "/login") return null;
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)]">

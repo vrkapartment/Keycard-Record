@@ -6,8 +6,10 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { isValidCardCode } from "@/lib/validation";
+import { verifySession } from "@/lib/session";
 
 export async function createRoom(formData: FormData) {
+  await verifySession();
   const number = String(formData.get("number") ?? "").trim();
   const note = String(formData.get("note") ?? "").trim();
 
@@ -26,6 +28,7 @@ export async function createRoom(formData: FormData) {
 }
 
 export async function updateRoom(roomId: number, formData: FormData) {
+  await verifySession();
   const number = String(formData.get("number") ?? "").trim();
   const note = String(formData.get("note") ?? "").trim();
 
@@ -52,6 +55,7 @@ export async function updateRoom(roomId: number, formData: FormData) {
 }
 
 export async function deleteRoom(roomId: number) {
+  await verifySession();
   const cardCount = await prisma.keycard.count({ where: { roomId } });
   if (cardCount > 0) {
     redirect(
@@ -74,6 +78,7 @@ export async function deleteRoom(roomId: number) {
 }
 
 export async function importRoomsCsv(formData: FormData) {
+  await verifySession();
   const file = formData.get("file");
 
   if (!(file instanceof File) || file.size === 0) {

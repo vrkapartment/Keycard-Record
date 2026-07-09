@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { CardStatus, Prisma } from "@/generated/prisma/client";
 import { isCardStatus, isValidCardCode } from "@/lib/validation";
+import { verifySession } from "@/lib/session";
 
 export async function createCard(formData: FormData) {
+  await verifySession();
   const roomId = Number(formData.get("roomId"));
   const code = String(formData.get("code") ?? "").trim();
 
@@ -30,6 +32,7 @@ export async function createCard(formData: FormData) {
 }
 
 export async function updateCard(cardId: number, formData: FormData) {
+  await verifySession();
   const roomId = Number(formData.get("roomId"));
   const code = String(formData.get("code") ?? "").trim();
 
@@ -58,6 +61,7 @@ export async function updateCard(cardId: number, formData: FormData) {
 }
 
 export async function deleteCard(cardId: number) {
+  await verifySession();
   const existing = await prisma.keycard.findUnique({ where: { id: cardId } });
   if (!existing) {
     redirect("/cards");
@@ -77,6 +81,7 @@ export async function deleteCard(cardId: number) {
 }
 
 export async function changeCardStatus(cardId: number, formData: FormData) {
+  await verifySession();
   const status = String(formData.get("status") ?? "");
 
   if (!isCardStatus(status)) {

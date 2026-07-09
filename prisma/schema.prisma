@@ -37,3 +37,18 @@ model Keycard {
   @@index([roomId])
   @@index([code])
 }
+
+model AppConfig {
+  id        Int      @id @default(autoincrement())
+  pinHash   String
+  version   Int      @default(1)
+  updatedAt DateTime @updatedAt
+}
+
+model LoginAttempt {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+}
