@@ -41,6 +41,7 @@ model Keycard {
 model AppConfig {
   id        Int      @id @default(autoincrement())
   pinHash   String
+  masterKey String?
   version   Int      @default(1)
   updatedAt DateTime @updatedAt
 }

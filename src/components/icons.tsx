@@ -103,6 +103,25 @@ export function DownloadIcon({ className }: IconProps) {
   );
 }
 
+export function BookIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M4 4.5A2 2 0 0 1 6 3h13.5v15H6a2 2 0 0 0-2 1.5" />
+      <path d="M4 4.5v15A2 2 0 0 0 6 21h13.5" />
+      <path d="M8.5 7.5h7" />
+      <path d="M8.5 11h7" />
+    </svg>
+  );
+}
+
 export function SettingsIcon({ className }: IconProps) {
   return (
     <svg

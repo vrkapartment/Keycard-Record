@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { CardStatus } from "@/generated/prisma/client";
 import { changeCardStatus, deleteCard } from "@/actions/cards";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { StatusBadge } from "@/components/StatusBadge";
 import { SubmitButton } from "@/components/SubmitButton";
 import { STATUS_LABELS, STATUS_ORDER } from "@/lib/validation";
+import { MANUAL_SECTIONS, fillManualStep } from "@/lib/manual";
 
 export default async function CardDetailPage({
   params,
@@ -27,6 +29,10 @@ export default async function CardDetailPage({
 
   const changeStatusForCard = changeCardStatus.bind(null, card.id);
   const deleteCardWithId = deleteCard.bind(null, card.id);
+
+  const showDeleteInstructions = card.status === CardStatus.PROCESS_INACTIVE;
+  const config = showDeleteInstructions ? await prisma.appConfig.findFirst() : null;
+  const deleteCardSection = MANUAL_SECTIONS.find((s) => s.id === "delete-card");
 
   return (
     <div className="space-y-4">
@@ -115,6 +121,32 @@ export default async function CardDetailPage({
           </SubmitButton>
         </form>
       </div>
+
+      {showDeleteInstructions && deleteCardSection && (
+        <div className="rounded-lg border border-pending-text/30 bg-pending-bg p-4">
+          <h2 className="mb-2 text-sm font-semibold text-pending-text">
+            {deleteCardSection.title} (บัตรใบนี้)
+          </h2>
+          {!config?.masterKey && (
+            <p className="mb-2 text-xs text-pending-text">
+              ยังไม่ตั้งค่า Master Key —{" "}
+              <Link href="/manual" className="underline underline-offset-2">
+                ไปตั้งค่าที่หน้าคู่มือการใช้งาน
+              </Link>
+            </p>
+          )}
+          <ol className="space-y-1.5">
+            {deleteCardSection.steps.map((step, index) => (
+              <li key={index} className="flex gap-2 text-sm">
+                <span className="text-pending-text">{index + 1}.</span>
+                <span className="font-mono">
+                  {fillManualStep(step, { masterKey: config?.masterKey, cardCode: card.code })}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   );
 }

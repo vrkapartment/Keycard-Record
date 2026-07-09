@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HomeIcon, DoorIcon, CardIcon, SettingsIcon } from "./icons";
+import { HomeIcon, DoorIcon, CardIcon, BookIcon, SettingsIcon } from "./icons";
 
 const TABS = [
   { href: "/", label: "หน้าแรก", Icon: HomeIcon },
   { href: "/rooms", label: "ห้อง", Icon: DoorIcon },
   { href: "/cards", label: "การ์ด", Icon: CardIcon },
+  { href: "/manual", label: "คู่มือ", Icon: BookIcon },
   { href: "/settings", label: "ตั้งค่า", Icon: SettingsIcon },
 ] as const;
 

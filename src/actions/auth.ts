@@ -102,3 +102,24 @@ export async function changePin(formData: FormData) {
 
   redirect("/settings?success=1");
 }
+
+export async function updateMasterKey(formData: FormData) {
+  await verifySession();
+
+  const masterKey = String(formData.get("masterKey") ?? "").trim();
+  if (!/^\d{1,10}$/.test(masterKey)) {
+    redirect(`/manual?error=${encodeURIComponent("Master Key ต้องเป็นตัวเลข")}`);
+  }
+
+  const config = await prisma.appConfig.findFirst();
+  if (!config) {
+    redirect(`/manual?error=${encodeURIComponent("ยังไม่มีการตั้งค่าระบบ")}`);
+  }
+
+  await prisma.appConfig.update({
+    where: { id: config.id },
+    data: { masterKey },
+  });
+
+  redirect("/manual?success=1");
+}
