@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { THEME_STORAGE_KEY, type ThemePreference } from "@/lib/theme";
+import { MonitorIcon, MoonIcon, SunIcon } from "@/components/icons";
 
 const THEME_EVENT = "themepreferencechange";
 
@@ -63,5 +64,37 @@ export function ThemeToggle() {
         );
       })}
     </div>
+  );
+}
+
+const CYCLE: ThemePreference[] = ["system", "light", "dark"];
+
+const CYCLE_ICONS: Record<ThemePreference, typeof SunIcon> = {
+  system: MonitorIcon,
+  light: SunIcon,
+  dark: MoonIcon,
+};
+
+const CYCLE_LABELS: Record<ThemePreference, string> = {
+  system: "ธีมตามระบบ",
+  light: "ธีมสว่าง",
+  dark: "ธีมมืด",
+};
+
+export function ThemeToggleButton({ className }: { className?: string }) {
+  const pref = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const Icon = CYCLE_ICONS[pref];
+  const next = CYCLE[(CYCLE.indexOf(pref) + 1) % CYCLE.length];
+
+  return (
+    <button
+      type="button"
+      onClick={() => applyTheme(next)}
+      aria-label={`สลับธีม (ปัจจุบัน: ${CYCLE_LABELS[pref]})`}
+      title={CYCLE_LABELS[pref]}
+      className={`inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface-sunken hover:text-ink ${className ?? ""}`}
+    >
+      <Icon className="h-5 w-5" />
+    </button>
   );
 }

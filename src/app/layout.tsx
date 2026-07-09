@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
 import { BottomNav } from "@/components/BottomNav";
+import { ThemeToggleButton } from "@/components/ThemeToggle";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -39,10 +40,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
         />
         <header className="sticky top-0 z-30 border-b border-border bg-paper pt-[env(safe-area-inset-top)]">
-          <div className="mx-auto flex max-w-xl items-center px-4 py-3">
+          <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3">
             <Link href="/" className="font-semibold text-primary">
               Keycard Record
             </Link>
+            <ThemeToggleButton />
           </div>
         </header>
         <main className="mx-auto w-full max-w-xl flex-1 px-4 py-5 pb-24">
