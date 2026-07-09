@@ -181,7 +181,7 @@ export default async function CardsPage({
       <CsvImportPanel
         redirectTo="/cards"
         templateHref="/templates/cards-template.csv"
-        description="คอลัมน์: number (หมายเลขห้อง) · cardCode (รหัสบัตร 5 หลัก) — ใส่หลายแถวหมายเลขห้องเดียวกันเพื่อเพิ่มหลายการ์ดในห้องเดียว ถ้าหมายเลขห้องยังไม่มีในระบบ จะสร้างห้องใหม่ให้อัตโนมัติ"
+        description="คอลัมน์: number (หมายเลขห้อง) · cardCode (รหัสบัตร 5 หลัก) · status (ACTIVE / PROCESS_INACTIVE / INACTIVE, ไม่บังคับ ค่าเริ่มต้น ACTIVE) · createdAt, statusChangedAt, cancelledAt (วันที่รูปแบบ YYYY-MM-DD, ไม่บังคับ) — ใส่หลายแถวหมายเลขห้องเดียวกันเพื่อเพิ่มหลายการ์ดในห้องเดียว ถ้าหมายเลขห้องยังไม่มีในระบบ จะสร้างห้องใหม่ให้อัตโนมัติ"
       />
     </div>
   );

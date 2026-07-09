@@ -4,9 +4,18 @@ import Papa from "papaparse";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@/generated/prisma/client";
-import { isSafeLocalPath, isValidCardCode } from "@/lib/validation";
+import { CardStatus, Prisma } from "@/generated/prisma/client";
+import { isCardStatus, isSafeLocalPath, isValidCardCode } from "@/lib/validation";
 import { verifySession } from "@/lib/session";
+
+// Returns undefined when the CSV cell is blank (caller should fall back to
+// a default), null when it's present but not a parseable date.
+function parseOptionalDate(value: string): Date | null | undefined {
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  const date = new Date(trimmed);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
 
 export async function createRoom(formData: FormData) {
   await verifySession();
@@ -131,7 +140,31 @@ export async function importRoomsCsv(formData: FormData) {
         skipped += 1;
         continue;
       }
-      await prisma.keycard.create({ data: { roomId, code: cardCode } });
+
+      const statusRaw = String(row.status ?? "").trim();
+      const status = statusRaw
+        ? isCardStatus(statusRaw) ? statusRaw : null
+        : CardStatus.ACTIVE;
+      if (status === null) {
+        skipped += 1;
+        continue;
+      }
+
+      const createdAt = parseOptionalDate(String(row.createdAt ?? ""));
+      const statusChangedAtRaw = parseOptionalDate(String(row.statusChangedAt ?? ""));
+      const cancelledAtRaw = parseOptionalDate(String(row.cancelledAt ?? ""));
+      if (createdAt === null || statusChangedAtRaw === null || cancelledAtRaw === null) {
+        skipped += 1;
+        continue;
+      }
+
+      const statusChangedAt = statusChangedAtRaw ?? createdAt;
+      const cancelledAt =
+        status === CardStatus.INACTIVE ? cancelledAtRaw ?? statusChangedAt ?? undefined : null;
+
+      await prisma.keycard.create({
+        data: { roomId, code: cardCode, status, createdAt, statusChangedAt, cancelledAt },
+      });
       cardsCreated += 1;
     }
   }
