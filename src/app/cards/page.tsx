@@ -12,6 +12,9 @@ import { CardListItem } from "@/components/CardListItem";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { SuccessBanner } from "@/components/SuccessBanner";
 import { CsvImportPanel } from "@/components/CsvImportPanel";
+import { Pagination } from "@/components/Pagination";
+
+const CARDS_PAGE_SIZE = 30;
 
 export default async function CardsPage({
   searchParams,
@@ -20,6 +23,7 @@ export default async function CardsPage({
     roomId?: string;
     status?: string;
     q?: string;
+    page?: string;
     error?: string;
     imported?: string;
     rooms?: string;
@@ -31,12 +35,16 @@ export default async function CardsPage({
     roomId,
     status,
     q,
+    page: pageRaw,
     error,
     imported,
     rooms: roomsCreated,
     cards: cardsCreated,
     skipped,
   } = await searchParams;
+
+  const requestedPage = Number(pageRaw ?? 1);
+  const page = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
   const importMessage =
     imported === "1"
@@ -57,14 +65,34 @@ export default async function CardsPage({
   if (status && isCardStatus(status)) where.status = status;
   if (q) where.code = { contains: q.trim() };
 
-  const [cards, rooms] = await Promise.all([
-    prisma.keycard.findMany({
-      where,
-      include: { room: true },
-      orderBy: { statusChangedAt: "desc" },
+  const [totalCards, rooms] = await Promise.all([
+    prisma.keycard.count({ where }),
+    prisma.room.findMany({
+      select: { id: true, number: true },
+      orderBy: { number: "asc" },
     }),
-    prisma.room.findMany({ orderBy: { number: "asc" } }),
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCards / CARDS_PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+
+  const cards = await prisma.keycard.findMany({
+    where,
+    include: { room: true },
+    orderBy: { statusChangedAt: "desc" },
+    skip: (currentPage - 1) * CARDS_PAGE_SIZE,
+    take: CARDS_PAGE_SIZE,
+  });
+
+  const buildPageHref = (targetPage: number) => {
+    const params = new URLSearchParams();
+    if (roomId) params.set("roomId", roomId);
+    if (status) params.set("status", status);
+    if (q) params.set("q", q);
+    if (targetPage > 1) params.set("page", String(targetPage));
+    const query = params.toString();
+    return query ? `/cards?${query}` : "/cards";
+  };
 
   return (
     <div className="space-y-4">
@@ -163,19 +191,22 @@ export default async function CardsPage({
       {cards.length === 0 ? (
         <EmptyState message="ไม่พบบัตรที่ตรงกับเงื่อนไข" />
       ) : (
-        <div className="space-y-2">
-          {cards.map((card) => (
-            <CardListItem
-              key={card.id}
-              id={card.id}
-              code={card.code}
-              status={card.status}
-              roomNumber={card.room.number}
-              dateLabel="เปลี่ยนสถานะล่าสุด"
-              date={card.statusChangedAt.toLocaleString("th-TH")}
-            />
-          ))}
-        </div>
+        <>
+          <div className="space-y-2">
+            {cards.map((card) => (
+              <CardListItem
+                key={card.id}
+                id={card.id}
+                code={card.code}
+                status={card.status}
+                roomNumber={card.room.number}
+                dateLabel="เปลี่ยนสถานะล่าสุด"
+                date={card.statusChangedAt.toLocaleString("th-TH")}
+              />
+            ))}
+          </div>
+          <Pagination page={currentPage} totalPages={totalPages} buildHref={buildPageHref} />
+        </>
       )}
 
       <CsvImportPanel

@@ -8,19 +8,22 @@ import { isCardStatus, isValidCardCode } from "@/lib/validation";
 import { verifySession } from "@/lib/session";
 
 export async function createCard(formData: FormData) {
-  await verifySession();
   const roomId = Number(formData.get("roomId"));
   const code = String(formData.get("code") ?? "").trim();
+  const inputValid = Boolean(roomId) && isValidCardCode(code);
 
-  if (!roomId || !isValidCardCode(code)) {
+  const [, room] = await Promise.all([
+    verifySession(),
+    inputValid ? prisma.room.findUnique({ where: { id: roomId } }) : null,
+  ]);
+
+  if (!inputValid) {
     redirect(
       `/cards/new?error=${encodeURIComponent(
         "กรุณาเลือกห้องและกรอกรหัสบัตรเป็นตัวเลข 5 หลัก"
       )}`
     );
   }
-
-  const room = await prisma.room.findUnique({ where: { id: roomId } });
   if (!room) {
     redirect(`/cards/new?error=${encodeURIComponent("ไม่พบห้องที่เลือก")}`);
   }
@@ -32,19 +35,22 @@ export async function createCard(formData: FormData) {
 }
 
 export async function updateCard(cardId: number, formData: FormData) {
-  await verifySession();
   const roomId = Number(formData.get("roomId"));
   const code = String(formData.get("code") ?? "").trim();
+  const inputValid = Boolean(roomId) && isValidCardCode(code);
 
-  if (!roomId || !isValidCardCode(code)) {
+  const [, room] = await Promise.all([
+    verifySession(),
+    inputValid ? prisma.room.findUnique({ where: { id: roomId } }) : null,
+  ]);
+
+  if (!inputValid) {
     redirect(
       `/cards/${cardId}/edit?error=${encodeURIComponent(
         "กรุณาเลือกห้องและกรอกรหัสบัตรเป็นตัวเลข 5 หลัก"
       )}`
     );
   }
-
-  const room = await prisma.room.findUnique({ where: { id: roomId } });
   if (!room) {
     redirect(
       `/cards/${cardId}/edit?error=${encodeURIComponent("ไม่พบห้องที่เลือก")}`
@@ -61,8 +67,10 @@ export async function updateCard(cardId: number, formData: FormData) {
 }
 
 export async function deleteCard(cardId: number) {
-  await verifySession();
-  const existing = await prisma.keycard.findUnique({ where: { id: cardId } });
+  const [, existing] = await Promise.all([
+    verifySession(),
+    prisma.keycard.findUnique({ where: { id: cardId } }),
+  ]);
   if (!existing) {
     redirect("/cards");
   }

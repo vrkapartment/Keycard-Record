@@ -33,11 +33,18 @@ export default async function RoomsPage({
       }
     : {};
 
-  const rooms = await prisma.room.findMany({
-    where,
-    orderBy: { number: "asc" },
-    include: { cards: { select: { status: true } } },
-  });
+  const [rooms, cardCounts] = await Promise.all([
+    prisma.room.findMany({ where, orderBy: { number: "asc" } }),
+    prisma.keycard.groupBy({ by: ["roomId", "status"], _count: { _all: true } }),
+  ]);
+
+  const countsByRoom = new Map<number, { total: number; active: number }>();
+  for (const group of cardCounts) {
+    const entry = countsByRoom.get(group.roomId) ?? { total: 0, active: 0 };
+    entry.total += group._count._all;
+    if (group.status === CardStatus.ACTIVE) entry.active += group._count._all;
+    countsByRoom.set(group.roomId, entry);
+  }
 
   const importMessage =
     imported === "1"
@@ -84,9 +91,7 @@ export default async function RoomsPage({
       ) : (
         <div className="space-y-2">
           {rooms.map((room) => {
-            const activeCount = room.cards.filter(
-              (c) => c.status === CardStatus.ACTIVE
-            ).length;
+            const counts = countsByRoom.get(room.id) ?? { total: 0, active: 0 };
             return (
               <Link
                 key={room.id}
@@ -103,9 +108,9 @@ export default async function RoomsPage({
                 </div>
                 <div className="shrink-0 text-right text-xs text-muted">
                   <div className="text-sm font-medium text-ink">
-                    {room.cards.length} การ์ด
+                    {counts.total} การ์ด
                   </div>
-                  <div className="text-active-text">{activeCount} Active</div>
+                  <div className="text-active-text">{counts.active} Active</div>
                 </div>
               </Link>
             );

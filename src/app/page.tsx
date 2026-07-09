@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/EmptyState";
 export default async function Home() {
   const [rooms, roomCount, activeCount, processInactiveCount, inactiveCount, pendingCards] =
     await Promise.all([
-      prisma.room.findMany({ orderBy: { number: "asc" } }),
+      prisma.room.findMany({ select: { id: true, number: true }, orderBy: { number: "asc" } }),
       prisma.room.count(),
       prisma.keycard.count({ where: { status: CardStatus.ACTIVE } }),
       prisma.keycard.count({ where: { status: CardStatus.PROCESS_INACTIVE } }),
