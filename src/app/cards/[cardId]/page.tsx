@@ -29,8 +29,8 @@ export default async function CardDetailPage({
   const deleteCardWithId = deleteCard.bind(null, card.id);
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6 flex items-start justify-between">
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="font-mono text-xl font-semibold">{card.code}</h1>
           <p className="mt-1 text-sm text-muted">
@@ -43,12 +43,12 @@ export default async function CardDetailPage({
             </Link>
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex shrink-0 gap-2">
           <Link
             href={`/cards/${card.id}/edit`}
             className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium hover:bg-surface-sunken"
           >
-            แก้ไขบัตร
+            แก้ไข
           </Link>
           <form action={deleteCardWithId}>
             <SubmitButton
@@ -64,7 +64,7 @@ export default async function CardDetailPage({
 
       <ErrorBanner message={error} />
 
-      <div className="mb-6 grid grid-cols-2 gap-4 rounded-md border border-border bg-paper p-4 text-sm sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 rounded-lg border border-border bg-paper p-4 text-sm">
         <div>
           <div className="text-xs text-muted">สถานะปัจจุบัน</div>
           <div className="mt-1">
@@ -93,16 +93,16 @@ export default async function CardDetailPage({
         </div>
       </div>
 
-      <div className="rounded-md border border-border bg-paper p-4">
+      <div className="rounded-lg border border-border bg-paper p-4">
         <h2 className="mb-3 text-sm font-medium text-muted">
           เปลี่ยนสถานะ
         </h2>
-        <form action={changeStatusForCard} className="flex items-end gap-3">
+        <form action={changeStatusForCard} className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <select
             name="status"
             aria-label="สถานะ"
             defaultValue={card.status}
-            className="rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="rounded-md border border-border-strong px-3 py-2.5 text-sm sm:flex-1"
           >
             {STATUS_ORDER.map((s) => (
               <option key={s} value={s}>

@@ -1,9 +1,11 @@
 "use server";
 
+import Papa from "papaparse";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
+import { isValidCardCode } from "@/lib/validation";
 
 export async function createRoom(formData: FormData) {
   const number = String(formData.get("number") ?? "").trim();
@@ -69,4 +71,73 @@ export async function deleteRoom(roomId: number) {
   }
   revalidatePath("/rooms");
   redirect("/rooms");
+}
+
+export async function importRoomsCsv(formData: FormData) {
+  const file = formData.get("file");
+
+  if (!(file instanceof File) || file.size === 0) {
+    redirect(`/rooms?error=${encodeURIComponent("กรุณาเลือกไฟล์ CSV")}`);
+  }
+
+  const text = await file.text();
+  const parsed = Papa.parse<Record<string, string>>(text, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (header) => header.trim(),
+  });
+
+  if (parsed.data.length === 0) {
+    redirect(`/rooms?error=${encodeURIComponent("ไฟล์ CSV ไม่มีข้อมูล")}`);
+  }
+
+  const existingRooms = await prisma.room.findMany();
+  const roomIdByNumber = new Map(existingRooms.map((room) => [room.number, room.id]));
+
+  let roomsCreated = 0;
+  let cardsCreated = 0;
+  let skipped = 0;
+
+  for (let i = 0; i < parsed.data.length; i++) {
+    const row = parsed.data[i];
+    const number = String(row.number ?? "").trim();
+    const note = String(row.note ?? "").trim();
+    const cardCode = String(row.cardCode ?? "").trim();
+
+    if (!number) {
+      skipped += 1;
+      continue;
+    }
+
+    let roomId = roomIdByNumber.get(number);
+    if (!roomId) {
+      const room = await prisma.room.create({
+        data: { number, note: note || null },
+      });
+      roomId = room.id;
+      roomIdByNumber.set(number, roomId);
+      roomsCreated += 1;
+    }
+
+    if (cardCode) {
+      if (!isValidCardCode(cardCode)) {
+        skipped += 1;
+        continue;
+      }
+      await prisma.keycard.create({ data: { roomId, code: cardCode } });
+      cardsCreated += 1;
+    }
+  }
+
+  revalidatePath("/rooms");
+  revalidatePath("/cards");
+  revalidatePath("/");
+
+  const params = new URLSearchParams({
+    imported: "1",
+    rooms: String(roomsCreated),
+    cards: String(cardsCreated),
+    skipped: String(skipped),
+  });
+  redirect(`/rooms?${params.toString()}`);
 }

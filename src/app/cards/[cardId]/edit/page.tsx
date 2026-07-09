@@ -25,8 +25,8 @@ export default async function EditCardPage({
   const updateCardWithId = updateCard.bind(null, card.id);
 
   return (
-    <div className="max-w-md">
-      <h1 className="mb-6 text-xl font-semibold">แก้ไขบัตร {card.code}</h1>
+    <div>
+      <h1 className="mb-4 text-xl font-semibold">แก้ไขบัตร {card.code}</h1>
       <ErrorBanner message={error} />
       <form action={updateCardWithId} className="space-y-4">
         <div>
@@ -38,7 +38,7 @@ export default async function EditCardPage({
             name="roomId"
             required
             defaultValue={card.roomId}
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm"
           >
             {rooms.map((room) => (
               <option key={room.id} value={room.id}>
@@ -59,7 +59,7 @@ export default async function EditCardPage({
             maxLength={5}
             inputMode="numeric"
             defaultValue={card.code}
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm font-mono"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm font-mono"
           />
         </div>
         <SubmitButton pendingText="กำลังบันทึก…">บันทึก</SubmitButton>

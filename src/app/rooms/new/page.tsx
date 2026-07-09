@@ -10,8 +10,8 @@ export default async function NewRoomPage({
   const { error } = await searchParams;
 
   return (
-    <div className="max-w-md">
-      <h1 className="mb-6 text-xl font-semibold">เพิ่มห้อง</h1>
+    <div>
+      <h1 className="mb-4 text-xl font-semibold">เพิ่มห้อง</h1>
       <ErrorBanner message={error} />
       <form action={createRoom} className="space-y-4">
         <div>
@@ -22,7 +22,7 @@ export default async function NewRoomPage({
             id="number"
             name="number"
             required
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm"
             placeholder="เช่น 204"
           />
         </div>
@@ -33,7 +33,7 @@ export default async function NewRoomPage({
           <input
             id="note"
             name="note"
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm"
             placeholder="เช่น ตึก A ชั้น 2"
           />
         </div>

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CardStatus } from "@/generated/prisma/client";
 import { STATUS_LABELS, STATUS_ORDER, isCardStatus } from "@/lib/validation";
-import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
+import { CardListItem } from "@/components/CardListItem";
 
 export default async function CardsPage({
   searchParams,
@@ -32,8 +32,8 @@ export default async function CardsPage({
   ]);
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">บัตรคีย์การ์ดทั้งหมด</h1>
         <Link
           href="/cards/new"
@@ -45,9 +45,9 @@ export default async function CardsPage({
 
       <form
         method="get"
-        className="mb-4 flex flex-wrap items-end gap-3 rounded-md border border-border bg-paper p-3"
+        className="flex flex-col gap-3 rounded-lg border border-border bg-paper p-3 sm:flex-row sm:items-end"
       >
-        <div>
+        <div className="flex-1">
           <label
             className="mb-1 block text-xs font-medium text-muted"
             htmlFor="filter-roomId"
@@ -58,7 +58,7 @@ export default async function CardsPage({
             id="filter-roomId"
             name="roomId"
             defaultValue={roomId ?? ""}
-            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
           >
             <option value="">ทั้งหมด</option>
             {rooms.map((room) => (
@@ -68,7 +68,7 @@ export default async function CardsPage({
             ))}
           </select>
         </div>
-        <div>
+        <div className="flex-1">
           <label
             className="mb-1 block text-xs font-medium text-muted"
             htmlFor="filter-status"
@@ -79,7 +79,7 @@ export default async function CardsPage({
             id="filter-status"
             name="status"
             defaultValue={status ?? ""}
-            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
           >
             <option value="">ทั้งหมด</option>
             {STATUS_ORDER.map((s) => (
@@ -89,7 +89,7 @@ export default async function CardsPage({
             ))}
           </select>
         </div>
-        <div>
+        <div className="flex-1">
           <label
             className="mb-1 block text-xs font-medium text-muted"
             htmlFor="filter-q"
@@ -101,70 +101,42 @@ export default async function CardsPage({
             name="q"
             defaultValue={q ?? ""}
             placeholder="เช่น 00042"
-            className="rounded-md border border-border-strong px-2 py-1.5 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
           />
         </div>
-        <button
-          type="submit"
-          className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium hover:bg-surface-sunken"
-        >
-          ค้นหา
-        </button>
-        {(roomId || status || q) && (
-          <Link
-            href="/cards"
-            className="text-sm text-muted underline underline-offset-2"
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            className="flex-1 rounded-md border border-border-strong px-3 py-2 text-sm font-medium hover:bg-surface-sunken sm:flex-none"
           >
-            ล้างตัวกรอง
-          </Link>
-        )}
+            ค้นหา
+          </button>
+          {(roomId || status || q) && (
+            <Link
+              href="/cards"
+              className="flex items-center text-sm text-muted underline underline-offset-2"
+            >
+              ล้างตัวกรอง
+            </Link>
+          )}
+        </div>
       </form>
 
       {cards.length === 0 ? (
         <EmptyState message="ไม่พบบัตรที่ตรงกับเงื่อนไข" />
       ) : (
-        <div className="overflow-hidden rounded-md border border-border bg-paper">
-          <table className="w-full text-sm">
-            <thead className="bg-surface text-left text-muted">
-              <tr>
-                <th className="px-4 py-2 font-medium">รหัสบัตร</th>
-                <th className="px-4 py-2 font-medium">ห้อง</th>
-                <th className="px-4 py-2 font-medium">สถานะ</th>
-                <th className="px-4 py-2 font-medium">เปลี่ยนสถานะล่าสุด</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cards.map((card) => (
-                <tr
-                  key={card.id}
-                  className="hoverable-row border-t border-border"
-                >
-                  <td className="px-4 py-2">
-                    <Link
-                      href={`/cards/${card.id}`}
-                      className="font-mono font-medium text-primary hover:underline"
-                    >
-                      {card.code}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2">
-                    <Link
-                      href={`/rooms/${card.roomId}`}
-                      className="hover:underline"
-                    >
-                      {card.room.number}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2">
-                    <StatusBadge status={card.status} />
-                  </td>
-                  <td className="px-4 py-2 text-muted">
-                    {card.statusChangedAt.toLocaleString("th-TH")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-2">
+          {cards.map((card) => (
+            <CardListItem
+              key={card.id}
+              id={card.id}
+              code={card.code}
+              status={card.status}
+              roomNumber={card.room.number}
+              dateLabel="เปลี่ยนสถานะล่าสุด"
+              date={card.statusChangedAt.toLocaleString("th-TH")}
+            />
+          ))}
         </div>
       )}
     </div>

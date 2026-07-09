@@ -21,8 +21,8 @@ export default async function EditRoomPage({
   const updateRoomWithId = updateRoom.bind(null, room.id);
 
   return (
-    <div className="max-w-md">
-      <h1 className="mb-6 text-xl font-semibold">แก้ไขห้อง {room.number}</h1>
+    <div>
+      <h1 className="mb-4 text-xl font-semibold">แก้ไขห้อง {room.number}</h1>
       <ErrorBanner message={error} />
       <form action={updateRoomWithId} className="space-y-4">
         <div>
@@ -34,7 +34,7 @@ export default async function EditRoomPage({
             name="number"
             required
             defaultValue={room.number}
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm"
           />
         </div>
         <div>
@@ -45,7 +45,7 @@ export default async function EditRoomPage({
             id="note"
             name="note"
             defaultValue={room.note ?? ""}
-            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm"
+            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm"
           />
         </div>
         <SubmitButton pendingText="กำลังบันทึก…">บันทึก</SubmitButton>

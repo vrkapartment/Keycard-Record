@@ -52,6 +52,7 @@
 body {
   background: var(--surface-sunken);
   color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* The Flat-at-Rest Rule: shadow only ever appears as a hover response. */

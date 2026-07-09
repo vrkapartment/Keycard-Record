@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CardStatus } from "@/generated/prisma/client";
-import { StatusBadge } from "@/components/StatusBadge";
+import { AddCardForm } from "@/components/AddCardForm";
+import { CardListItem } from "@/components/CardListItem";
+import { EmptyState } from "@/components/EmptyState";
 
 export default async function Home() {
-  const [roomCount, activeCount, processInactiveCount, inactiveCount, pendingCards] =
+  const [rooms, roomCount, activeCount, processInactiveCount, inactiveCount, pendingCards] =
     await Promise.all([
+      prisma.room.findMany({ orderBy: { number: "asc" } }),
       prisma.room.count(),
       prisma.keycard.count({ where: { status: CardStatus.ACTIVE } }),
       prisma.keycard.count({ where: { status: CardStatus.PROCESS_INACTIVE } }),
@@ -34,14 +37,30 @@ export default async function Home() {
   ];
 
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-semibold">ภาพรวมระบบ</h1>
+    <div className="space-y-8">
+      <div>
+        {rooms.length === 0 ? (
+          <EmptyState
+            message="ยังไม่มีห้องในระบบ กรุณาเพิ่มห้องก่อนจึงจะเพิ่มบัตรได้"
+            action={
+              <Link
+                href="/rooms/new"
+                className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-paper hover:bg-primary-hover"
+              >
+                + เพิ่มห้อง
+              </Link>
+            }
+          />
+        ) : (
+          <AddCardForm rooms={rooms} title="เพิ่มบัตรคีย์การ์ด" />
+        )}
+      </div>
 
-      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-md border border-border-strong bg-paper p-4"
+            className="rounded-xl border border-border-strong bg-paper p-4"
           >
             <div className={`text-2xl font-semibold ${stat.colorClass}`}>
               {stat.value}
@@ -51,63 +70,42 @@ export default async function Home() {
         ))}
       </div>
 
-      <div className="mb-4 flex items-center gap-2">
-        <h2 className="text-sm font-medium text-muted">
-          บัตรที่รอดำเนินการปิดใช้งาน (Process Inactive)
-        </h2>
-        {processInactiveCount > 0 && (
-          <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-ink">
-            {processInactiveCount} รอ
-          </span>
-        )}
-        <Link
-          href="/cards?status=PROCESS_INACTIVE"
-          className="ml-auto text-sm text-primary underline underline-offset-2"
-        >
-          ดูทั้งหมด
-        </Link>
-      </div>
-
-      {pendingCards.length === 0 ? (
-        <p className="text-sm text-muted">ไม่มีบัตรที่รอดำเนินการ</p>
-      ) : (
-        <div className="overflow-hidden rounded-md border border-border bg-paper">
-          <table className="w-full text-sm">
-            <thead className="bg-surface text-left text-muted">
-              <tr>
-                <th className="px-4 py-2 font-medium">รหัสบัตร</th>
-                <th className="px-4 py-2 font-medium">ห้อง</th>
-                <th className="px-4 py-2 font-medium">สถานะ</th>
-                <th className="px-4 py-2 font-medium">รอมาตั้งแต่</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingCards.map((card) => (
-                <tr
-                  key={card.id}
-                  className="hoverable-row border-t border-border"
-                >
-                  <td className="px-4 py-2">
-                    <Link
-                      href={`/cards/${card.id}`}
-                      className="font-mono font-medium text-primary hover:underline"
-                    >
-                      {card.code}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2">{card.room.number}</td>
-                  <td className="px-4 py-2">
-                    <StatusBadge status={card.status} />
-                  </td>
-                  <td className="px-4 py-2 text-muted">
-                    {card.statusChangedAt.toLocaleDateString("th-TH")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div>
+        <div className="mb-3 flex items-center gap-2">
+          <h2 className="text-sm font-medium text-muted">
+            รอดำเนินการปิดใช้งาน
+          </h2>
+          {processInactiveCount > 0 && (
+            <span className="inline-flex items-center rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-ink">
+              {processInactiveCount} รอ
+            </span>
+          )}
+          <Link
+            href="/cards?status=PROCESS_INACTIVE"
+            className="ml-auto text-sm text-primary underline underline-offset-2"
+          >
+            ดูทั้งหมด
+          </Link>
         </div>
-      )}
+
+        {pendingCards.length === 0 ? (
+          <p className="text-sm text-muted">ไม่มีบัตรที่รอดำเนินการ</p>
+        ) : (
+          <div className="space-y-2">
+            {pendingCards.map((card) => (
+              <CardListItem
+                key={card.id}
+                id={card.id}
+                code={card.code}
+                status={card.status}
+                roomNumber={card.room.number}
+                dateLabel="รอมาตั้งแต่"
+                date={card.statusChangedAt.toLocaleDateString("th-TH")}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

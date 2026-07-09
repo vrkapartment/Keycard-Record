@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { deleteRoom } from "@/actions/rooms";
 import { ErrorBanner } from "@/components/ErrorBanner";
-import { StatusBadge } from "@/components/StatusBadge";
 import { SubmitButton } from "@/components/SubmitButton";
 import { EmptyState } from "@/components/EmptyState";
+import { CardListItem } from "@/components/CardListItem";
 
 export default async function RoomDetailPage({
   params,
@@ -28,8 +28,8 @@ export default async function RoomDetailPage({
   const deleteRoomWithId = deleteRoom.bind(null, room.id);
 
   return (
-    <div>
-      <div className="mb-6 flex items-start justify-between">
+    <div className="space-y-4">
+      <div className="flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold">ห้อง {room.number}</h1>
           {room.note && (
@@ -41,7 +41,7 @@ export default async function RoomDetailPage({
             href={`/rooms/${room.id}/edit`}
             className="rounded-md border border-border-strong px-3 py-1.5 text-sm font-medium hover:bg-surface-sunken"
           >
-            แก้ไขห้อง
+            แก้ไข
           </Link>
           <form action={deleteRoomWithId}>
             <SubmitButton
@@ -57,7 +57,7 @@ export default async function RoomDetailPage({
 
       <ErrorBanner message={error} />
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium text-muted">
           บัตรคีย์การ์ดในห้องนี้ ({room.cards.length})
         </h2>
@@ -82,39 +82,17 @@ export default async function RoomDetailPage({
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-md border border-border bg-paper">
-          <table className="w-full text-sm">
-            <thead className="bg-surface text-left text-muted">
-              <tr>
-                <th className="px-4 py-2 font-medium">รหัสบัตร</th>
-                <th className="px-4 py-2 font-medium">สถานะ</th>
-                <th className="px-4 py-2 font-medium">สร้างเมื่อ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {room.cards.map((card) => (
-                <tr
-                  key={card.id}
-                  className="hoverable-row border-t border-border"
-                >
-                  <td className="px-4 py-2">
-                    <Link
-                      href={`/cards/${card.id}`}
-                      className="font-mono font-medium text-primary hover:underline"
-                    >
-                      {card.code}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-2">
-                    <StatusBadge status={card.status} />
-                  </td>
-                  <td className="px-4 py-2 text-muted">
-                    {card.createdAt.toLocaleDateString("th-TH")}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-2">
+          {room.cards.map((card) => (
+            <CardListItem
+              key={card.id}
+              id={card.id}
+              code={card.code}
+              status={card.status}
+              dateLabel="สร้างเมื่อ"
+              date={card.createdAt.toLocaleDateString("th-TH")}
+            />
+          ))}
         </div>
       )}
     </div>
