@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
-import { isValidCardCode } from "@/lib/validation";
+import { isSafeLocalPath, isValidCardCode } from "@/lib/validation";
 import { verifySession } from "@/lib/session";
 
 export async function createRoom(formData: FormData) {
@@ -80,9 +80,11 @@ export async function deleteRoom(roomId: number) {
 export async function importRoomsCsv(formData: FormData) {
   await verifySession();
   const file = formData.get("file");
+  const redirectToRaw = String(formData.get("redirectTo") ?? "/rooms");
+  const redirectTo = isSafeLocalPath(redirectToRaw) ? redirectToRaw : "/rooms";
 
   if (!(file instanceof File) || file.size === 0) {
-    redirect(`/rooms?error=${encodeURIComponent("กรุณาเลือกไฟล์ CSV")}`);
+    redirect(`${redirectTo}?error=${encodeURIComponent("กรุณาเลือกไฟล์ CSV")}`);
   }
 
   const text = await file.text();
@@ -93,7 +95,7 @@ export async function importRoomsCsv(formData: FormData) {
   });
 
   if (parsed.data.length === 0) {
-    redirect(`/rooms?error=${encodeURIComponent("ไฟล์ CSV ไม่มีข้อมูล")}`);
+    redirect(`${redirectTo}?error=${encodeURIComponent("ไฟล์ CSV ไม่มีข้อมูล")}`);
   }
 
   const existingRooms = await prisma.room.findMany();
@@ -144,5 +146,5 @@ export async function importRoomsCsv(formData: FormData) {
     cards: String(cardsCreated),
     skipped: String(skipped),
   });
-  redirect(`/rooms?${params.toString()}`);
+  redirect(`${redirectTo}?${params.toString()}`);
 }

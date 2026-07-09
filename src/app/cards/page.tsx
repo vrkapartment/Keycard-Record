@@ -1,16 +1,51 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CardStatus } from "@/generated/prisma/client";
-import { STATUS_LABELS, STATUS_ORDER, isCardStatus } from "@/lib/validation";
+import {
+  STATUS_LABELS,
+  STATUS_ORDER,
+  formatImportSummary,
+  isCardStatus,
+} from "@/lib/validation";
 import { EmptyState } from "@/components/EmptyState";
 import { CardListItem } from "@/components/CardListItem";
+import { ErrorBanner } from "@/components/ErrorBanner";
+import { SuccessBanner } from "@/components/SuccessBanner";
+import { CsvImportPanel } from "@/components/CsvImportPanel";
 
 export default async function CardsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ roomId?: string; status?: string; q?: string }>;
+  searchParams: Promise<{
+    roomId?: string;
+    status?: string;
+    q?: string;
+    error?: string;
+    imported?: string;
+    rooms?: string;
+    cards?: string;
+    skipped?: string;
+  }>;
 }) {
-  const { roomId, status, q } = await searchParams;
+  const {
+    roomId,
+    status,
+    q,
+    error,
+    imported,
+    rooms: roomsCreated,
+    cards: cardsCreated,
+    skipped,
+  } = await searchParams;
+
+  const importMessage =
+    imported === "1"
+      ? formatImportSummary({
+          roomsCreated: Number(roomsCreated ?? 0),
+          cardsCreated: Number(cardsCreated ?? 0),
+          skipped: Number(skipped ?? 0),
+        })
+      : undefined;
 
   const where: {
     roomId?: number;
@@ -42,6 +77,9 @@ export default async function CardsPage({
           + เพิ่มบัตร
         </Link>
       </div>
+
+      <ErrorBanner message={error} />
+      <SuccessBanner message={importMessage} />
 
       <form
         method="get"
@@ -139,6 +177,8 @@ export default async function CardsPage({
           ))}
         </div>
       )}
+
+      <CsvImportPanel redirectTo="/cards" />
     </div>
   );
 }

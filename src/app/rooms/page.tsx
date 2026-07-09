@@ -2,13 +2,12 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CardStatus, Prisma } from "@/generated/prisma/client";
-import { importRoomsCsv } from "@/actions/rooms";
+import { formatImportSummary } from "@/lib/validation";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { SuccessBanner } from "@/components/SuccessBanner";
-import { SubmitButton } from "@/components/SubmitButton";
 import { RoomSearchInput } from "@/components/RoomSearchInput";
-import { UploadIcon, DownloadIcon } from "@/components/icons";
+import { CsvImportPanel } from "@/components/CsvImportPanel";
 
 export default async function RoomsPage({
   searchParams,
@@ -42,9 +41,11 @@ export default async function RoomsPage({
 
   const importMessage =
     imported === "1"
-      ? `นำเข้าเสร็จแล้ว: เพิ่มห้อง ${roomsCreated ?? 0} ห้อง, เพิ่มบัตร ${
-          cardsCreated ?? 0
-        } ใบ` + (Number(skipped) > 0 ? ` (ข้าม ${skipped} แถวที่ไม่ถูกต้อง)` : "")
+      ? formatImportSummary({
+          roomsCreated: Number(roomsCreated ?? 0),
+          cardsCreated: Number(cardsCreated ?? 0),
+          skipped: Number(skipped ?? 0),
+        })
       : undefined;
 
   return (
@@ -112,42 +113,7 @@ export default async function RoomsPage({
         </div>
       )}
 
-      <details className="group rounded-lg border border-border bg-paper">
-        <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium">
-          <UploadIcon className="h-4 w-4 text-muted" />
-          นำเข้าห้อง/บัตรจาก CSV
-        </summary>
-        <div className="space-y-3 border-t border-border px-4 py-4">
-          <a
-            href="/templates/rooms-template.csv"
-            download
-            className="inline-flex items-center gap-1.5 text-sm text-primary underline underline-offset-2"
-          >
-            <DownloadIcon className="h-4 w-4" />
-            ดาวน์โหลด Template CSV
-          </a>
-          <p className="text-xs text-muted">
-            คอลัมน์: number (หมายเลขห้อง, จำเป็น) · note (หมายเหตุ, ไม่บังคับ) ·
-            cardCode (รหัสบัตร 5 หลัก, ไม่บังคับ) — ใส่หลายแถวหมายเลขห้องเดียวกันเพื่อเพิ่มหลายการ์ดในห้องเดียว
-          </p>
-          <form
-            action={importRoomsCsv}
-            className="flex flex-col gap-3 sm:flex-row sm:items-center"
-          >
-            <input
-              type="file"
-              name="file"
-              accept=".csv,text/csv"
-              required
-              aria-label="ไฟล์ CSV"
-              className="flex-1 rounded-md border border-border-strong bg-paper px-3 py-2 text-sm"
-            />
-            <SubmitButton pendingText="กำลังนำเข้า…" size="sm">
-              นำเข้า
-            </SubmitButton>
-          </form>
-        </div>
-      </details>
+      <CsvImportPanel />
     </div>
   );
 }

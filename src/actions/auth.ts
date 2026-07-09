@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { createSession, deleteSession, verifySession } from "@/lib/session";
+import { isSafeLocalPath } from "@/lib/validation";
 
 const PIN_REGEX = /^\d{6}$/;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
@@ -15,15 +16,10 @@ async function getClientIp() {
   return requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
 }
 
-function safeNextPath(next: string) {
-  return next.startsWith("/") && !next.startsWith("//") && !next.includes("://")
-    ? next
-    : "/";
-}
-
 export async function login(formData: FormData) {
   const pin = String(formData.get("pin") ?? "").trim();
-  const next = safeNextPath(String(formData.get("next") ?? "/"));
+  const nextRaw = String(formData.get("next") ?? "/");
+  const next = isSafeLocalPath(nextRaw) ? nextRaw : "/";
   const ip = await getClientIp();
 
   const recentAttempts = await prisma.loginAttempt.count({
