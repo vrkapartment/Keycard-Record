@@ -2,7 +2,15 @@ import { importRoomsCsv } from "@/actions/rooms";
 import { SubmitButton } from "@/components/SubmitButton";
 import { UploadIcon, DownloadIcon } from "@/components/icons";
 
-export function CsvImportPanel({ redirectTo }: { redirectTo?: string }) {
+export function CsvImportPanel({
+  redirectTo,
+  templateHref = "/templates/rooms-template.csv",
+  description = "คอลัมน์: number (หมายเลขห้อง, จำเป็น) · note (หมายเหตุ, ไม่บังคับ) · cardCode (รหัสบัตร 5 หลัก, ไม่บังคับ) — ใส่หลายแถวหมายเลขห้องเดียวกันเพื่อเพิ่มหลายการ์ดในห้องเดียว",
+}: {
+  redirectTo?: string;
+  templateHref?: string;
+  description?: string;
+}) {
   return (
     <details className="group rounded-lg border border-border bg-paper">
       <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium">
@@ -11,17 +19,14 @@ export function CsvImportPanel({ redirectTo }: { redirectTo?: string }) {
       </summary>
       <div className="space-y-3 border-t border-border px-4 py-4">
         <a
-          href="/templates/rooms-template.csv"
+          href={templateHref}
           download
           className="inline-flex items-center gap-1.5 text-sm text-primary underline underline-offset-2"
         >
           <DownloadIcon className="h-4 w-4" />
           ดาวน์โหลด Template CSV
         </a>
-        <p className="text-xs text-muted">
-          คอลัมน์: number (หมายเลขห้อง, จำเป็น) · note (หมายเหตุ, ไม่บังคับ) ·
-          cardCode (รหัสบัตร 5 หลัก, ไม่บังคับ) — ใส่หลายแถวหมายเลขห้องเดียวกันเพื่อเพิ่มหลายการ์ดในห้องเดียว
-        </p>
+        <p className="text-xs text-muted">{description}</p>
         <form
           action={importRoomsCsv}
           className="flex flex-col gap-3 sm:flex-row sm:items-center"
