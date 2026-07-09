@@ -1,4 +1,5 @@
 import { createCard } from "@/actions/cards";
+import { CardCodeField } from "@/components/CardCodeField";
 import { SubmitButton } from "@/components/SubmitButton";
 
 export function AddCardForm({
@@ -39,19 +40,7 @@ export function AddCardForm({
           </select>
         </div>
         <div className="flex-1">
-          <label className="mb-1 block text-xs font-medium text-muted" htmlFor="code">
-            รหัสบัตร (5 หลัก)
-          </label>
-          <input
-            id="code"
-            name="code"
-            required
-            pattern="\d{5}"
-            maxLength={5}
-            inputMode="numeric"
-            placeholder="เช่น 00042"
-            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm font-mono"
-          />
+          <CardCodeField placeholder="เช่น 00042" />
         </div>
       </div>
       <SubmitButton pendingText="กำลังบันทึก…">+ เพิ่มบัตร</SubmitButton>

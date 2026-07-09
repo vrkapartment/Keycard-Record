@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { updateCard } from "@/actions/cards";
+import { CardCodeField } from "@/components/CardCodeField";
 import { ErrorBanner } from "@/components/ErrorBanner";
 import { SubmitButton } from "@/components/SubmitButton";
 
@@ -47,21 +48,7 @@ export default async function EditCardPage({
             ))}
           </select>
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium" htmlFor="code">
-            รหัสบัตร (5 หลัก)
-          </label>
-          <input
-            id="code"
-            name="code"
-            required
-            pattern="\d{5}"
-            maxLength={5}
-            inputMode="numeric"
-            defaultValue={card.code}
-            className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm font-mono"
-          />
-        </div>
+        <CardCodeField defaultValue={card.code} />
         <SubmitButton pendingText="กำลังบันทึก…">บันทึก</SubmitButton>
       </form>
     </div>
