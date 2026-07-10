@@ -62,7 +62,8 @@ export function CardCodeField({
 }) {
   const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const libraryInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<ScanStatus>("idle");
   const [message, setMessage] = useState("");
 
@@ -129,14 +130,24 @@ export function CardCodeField({
         <label className="block text-xs font-medium text-muted" htmlFor={id}>
           รหัสบัตร (5 หลัก)
         </label>
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={status === "scanning"}
-          className="text-xs font-medium text-primary underline underline-offset-2 disabled:opacity-50"
-        >
-          {status === "scanning" ? "กำลังอ่าน…" : "ถ่ายรูปสแกน"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => cameraInputRef.current?.click()}
+            disabled={status === "scanning"}
+            className="text-xs font-medium text-primary underline underline-offset-2 disabled:opacity-50"
+          >
+            {status === "scanning" ? "กำลังอ่าน…" : "ถ่ายรูปสแกน"}
+          </button>
+          <button
+            type="button"
+            onClick={() => libraryInputRef.current?.click()}
+            disabled={status === "scanning"}
+            className="text-xs font-medium text-primary underline underline-offset-2 disabled:opacity-50"
+          >
+            เลือกจากคลังภาพ
+          </button>
+        </div>
       </div>
       <input
         ref={inputRef}
@@ -152,10 +163,17 @@ export function CardCodeField({
         className="w-full rounded-md border border-border-strong px-3 py-2.5 text-sm font-mono"
       />
       <input
-        ref={fileInputRef}
+        ref={cameraInputRef}
         type="file"
         accept="image/*"
         capture="environment"
+        onChange={handleFile}
+        className="hidden"
+      />
+      <input
+        ref={libraryInputRef}
+        type="file"
+        accept="image/*"
         onChange={handleFile}
         className="hidden"
       />
